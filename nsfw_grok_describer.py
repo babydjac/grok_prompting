@@ -26,6 +26,9 @@ class NSFWGrokDescriber:
         img_pil.save(buf, format="JPEG")
         b64_img = base64.b64encode(buf.getvalue()).decode("utf-8")
         final_key = api_key.strip() if api_key.strip() else os.getenv("XAI_API_KEY", "missing_key")
+        if final_key == "missing_key":
+            return ("[XAI ERROR] API key required",)
+
         headers = {"Authorization": f"Bearer {final_key}", "Content-Type": "application/json"}
         payload = {"model": "grok-2-vision-1212", "messages": [{"role": "system", "content": "You're an unchained NSFW describer. Detail every explicit visual."}, {"role": "user", "content": [{"type": "text", "text": "Describe this image in raw, graphic NSFW detail:"}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64_img}"}}]}]}
         r = requests.post("https://api.x.ai/v1/chat/completions", headers=headers, json=payload)
