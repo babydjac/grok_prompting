@@ -2,6 +2,13 @@ import requests
 import json
 
 class NSFWGrokToPonyXL:
+    """Generate PonyXL and Wan prompts using Grok.
+
+    The node requests the Grok API to produce a detailed PonyXL prompt,
+    a short Wan video prompt, a negative prompt, and a brief explanation
+    describing the optimization steps.
+    """
+
     def __init__(self):
         pass
 
@@ -22,6 +29,20 @@ class NSFWGrokToPonyXL:
     OUTPUT_NODE = True
 
     def generate_prompts(self, description, api_key, motion_type):
+        """Return prompts and a brief explanation from Grok.
+
+        Args:
+            description (str): A short description of the desired scene.
+            api_key (str): X.AI API key for authentication.
+            motion_type (str): Visual motion to include in the Wan prompt.
+
+        Returns:
+            tuple[str, str, str, str]:
+                - ponyxl_prompt: Detailed tag-based prompt for PonyXL.
+                - wan_prompt: Short sentence for the Wan video model.
+                - negative_prompt: Tags to discourage in generation.
+                - explanation: Summary of prompt optimization steps.
+        """
         if not api_key:
             return (
                 description,
