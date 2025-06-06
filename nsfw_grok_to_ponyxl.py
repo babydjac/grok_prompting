@@ -15,15 +15,20 @@ class NSFWGrokToPonyXL:
             }
         }
 
-    RETURN_TYPES = ("STRING", "STRING", "STRING")
-    RETURN_NAMES = ("ponyxl_prompt", "wan_prompt", "negative_prompt")
+    RETURN_TYPES = ("STRING", "STRING", "STRING", "STRING")
+    RETURN_NAMES = ("ponyxl_prompt", "wan_prompt", "negative_prompt", "explanation")
     FUNCTION = "generate_prompts"
     CATEGORY = "GrokPrompting"
     OUTPUT_NODE = True
 
     def generate_prompts(self, description, api_key, motion_type):
         if not api_key:
-            return (description, "", "blurry, low_quality, bad_anatomy, oversaturated")
+            return (
+                description,
+                "",
+                "blurry, low_quality, bad_anatomy, oversaturated",
+                "",
+            )
         try:
             headers = {"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"}
             data = {
@@ -47,7 +52,10 @@ class NSFWGrokToPonyXL:
             result_dict = json.loads(result)
             ponyxl_prompt = result_dict.get("ponyxl_prompt", description)
             wan_prompt = result_dict.get("wan_prompt", "")
-            negative_prompt = result_dict.get("negative_prompt", "blurry, low_quality, bad_anatomy, oversaturated")
-            return (ponyxl_prompt, wan_prompt, negative_prompt)
+            negative_prompt = result_dict.get(
+                "negative_prompt", "blurry, low_quality, bad_anatomy, oversaturated"
+            )
+            explanation = result_dict.get("explanation", "")
+            return (ponyxl_prompt, wan_prompt, negative_prompt, explanation)
         except Exception as e:
-            return (description, "", "blurry, low_quality, bad_anatomy, oversaturated")
+            return (description, "", "blurry, low_quality, bad_anatomy, oversaturated", "")
